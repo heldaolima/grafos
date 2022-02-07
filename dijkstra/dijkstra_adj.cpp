@@ -35,7 +35,7 @@ void writeSolution(int dist[], int n, char nome_o[], int final)
         arquivo << dist[final] << endl;
 
     arquivo.close();
-    cout << "Solução escrita no arquivo '" << nome_o << "'\n";
+    cout << "Solução inscrita no arquivo '" << nome_o << "'\n";
 }
 
 void printSolution(int dist[], int n, int final)
@@ -43,9 +43,9 @@ void printSolution(int dist[], int n, int final)
     if (final != -1) 
         cout << dist[final] << "\n";
     else {
-        cout << "Vertex distance from Source\n";
         for (int i = 0; i < n; i++)
-            cout << i << "\t\t" << dist[i] << "\n";
+            cout << i << ":" << dist[i] << " ";
+    cout << "\n";
     }
 }
 
@@ -175,27 +175,11 @@ int main(int argc, char const *argv[])
         
         if (o)
             writeSolution(dist, vertices, saida, final);
-        if (s)
-            printSolution(dist, vertices, final);
-
+        
+        printSolution(dist, vertices, final);
     }
 
     return 0;
 }
 
-//passar pelos vértices usando BFS 
-//Min Heap para guardar os vértices ainda não procesados
-//Min Heap -> priority queue
-
-/*
-1) let Min_Heap[V] = {numero, distancia}
-2) new Min_Heap with src as root
-3) while !min_heap.empty()
-{
-    a) u = o vértice de distância minima da minheap
-    b) for v adjacentes de u {
-        if (min_heap.contains(v) && distancia(v) > peso(u-v)+ distancia(u))
-            update(v)
-    }
-}
-*/
+//O(E*logV)

@@ -21,15 +21,15 @@ using std::cout;
 using std::cin;
 using std::endl;
 
-void writeSolution(int dist[], int n, char nome_o[], int final)
+void writeSolution(int dist[], int n, char nome_o[], bool l, int final)
 {
     std::ofstream arquivo;
     arquivo.open(nome_o);
     
-    if (final != -1)
+    if (l)
     {
         for (int i = 0; i < n; i++)
-            arquivo << i << ": " << dist[i] << endl;
+            arquivo << i << ": " << dist[i] << " " << endl;
     }
     else
         arquivo << dist[final] << endl;
@@ -38,22 +38,20 @@ void writeSolution(int dist[], int n, char nome_o[], int final)
     cout << "Solução inscrita no arquivo '" << nome_o << "'\n";
 }
 
-void printSolution(int dist[], int n, int final)
+void printSolution(int dist[], int n, bool l, int final)
 {
-    if (final != -1) 
+    if (l) 
         cout << dist[final] << "\n";
     else {
         for (int i = 0; i < n; i++)
             cout << i << ":" << dist[i] << " ";
-    cout << "\n";
+        cout << "\n";
     }
 }
 
-void dijkstra(Graph graph, int src, int final, int dist[])
+void dijkstra(Graph graph, int src, int dist[])
 {
     int V = graph.V;
-
-    // int dist[V]; //array solução
 
     MinHeap minHeap(V);
 
@@ -116,8 +114,8 @@ void help_dijkstra()
 
 int main(int argc, char const *argv[])
 {
-    int vertices, arestas, fonte = 0, final = -1;
-    bool o = false, f = false, s = false;
+    int vertices, arestas, final = 0, fonte = 0;
+    bool o = false, f = false, s = false, l = false;
     char entrada[100], saida[100];
 
     if (argc > 1) {
@@ -131,6 +129,7 @@ int main(int argc, char const *argv[])
                 i++;
             }
             else if (strcmp(argv[i], "-l") == 0) {
+                l = true;
                 final = std::stoi(argv[i+1]);
                 i++;
             }
@@ -149,6 +148,8 @@ int main(int argc, char const *argv[])
         }
     }
 
+    if (o) cout << saida << "\n";
+
     if (!f) {
         cout << "Nenhum arquivo de entrada foi informado.\nEncerrando programa...\n";
         return 0;
@@ -156,6 +157,11 @@ int main(int argc, char const *argv[])
     else {
         std::ifstream arquivo;
         arquivo.open(entrada);
+
+        if (arquivo.fail()) {
+            cout << "O arquivo '" << entrada << "' não foi encontrado.\nEncerrando programa...\n";
+            return 0;
+        }
 
         arquivo >> vertices >> entrada;
 
@@ -169,14 +175,24 @@ int main(int argc, char const *argv[])
         }
 
         arquivo.close();
+        
+        if (fonte < 0 || fonte >= G.V) {
+            cout << "Vértice fonte fora do intervalo aceitável\n";
+            return 0;
+        }
+        else if (l && (final < 0 || final >= G.V)) {
+            cout << "Vértice final fora do intervalo aceitável\n";
+            return 0;
+        }
+
         int dist[vertices]; //resposta
 
-        dijkstra(G, fonte, final, dist);
+        dijkstra(G, fonte, dist);
         
         if (o)
-            writeSolution(dist, vertices, saida, final);
+            writeSolution(dist, vertices, saida, l, final);
         
-        printSolution(dist, vertices, final);
+        printSolution(dist, vertices, l, final);
     }
 
     return 0;

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <climits>
+
 using std::cout;
 
 typedef struct MinHeapNode {
@@ -125,4 +126,11 @@ MinHeapNode* MinHeap::extractMin()
     MinHeapify(0);
 
     return root;
+}
+
+//deleta o elemento no índice i
+void MinHeap::deleteKey(int i)
+{
+    decreaseKey(i, INT_MIN);
+    extractMin();
 }

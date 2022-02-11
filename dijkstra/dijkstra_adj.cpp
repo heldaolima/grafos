@@ -21,27 +21,27 @@ using std::cout;
 using std::cin;
 using std::endl;
 
-void writeSolution(int dist[], int n, char nome_o[], bool l, int final)
+void writeSolution(int dist[], int n, char nome_o[], bool l, int last)
 {
     std::ofstream arquivo;
     arquivo.open(nome_o);
     
-    if (l)
+    if (!l)
     {
         for (int i = 0; i < n; i++)
             arquivo << i << ": " << dist[i] << " " << endl;
     }
     else
-        arquivo << dist[final] << endl;
+        arquivo << dist[last] << endl;
 
     arquivo.close();
     cout << "Solução inscrita no arquivo '" << nome_o << "'\n";
 }
 
-void printSolution(int dist[], int n, bool l, int final)
+void printSolution(int dist[], int n, bool l, int last)
 {
     if (l) 
-        cout << dist[final] << "\n";
+        cout << dist[last] << "\n";
     else {
         for (int i = 0; i < n; i++)
             cout << i << ":" << dist[i] << " ";
@@ -86,7 +86,7 @@ void dijkstra(Graph graph, int src, int dist[])
         for (i = graph.adj[u].begin(); i != graph.adj[u].end(); i++) {
             int v = i->dest;
             
-            //se a menor distância a v não foi finalizada, e a distância
+            //se a menor distância a v não foi lastizada, e a distância
             //de u até v é menor do que antes
             // printf("%d + %d < %d\n", i->peso, dist[u], dist[v]);
             if (minHeap.isInMinHeap(v) && dist[u] != INT_MAX && i->peso + dist[u] < dist[v])
@@ -106,15 +106,18 @@ void help_dijkstra()
 {
     cout << "~~ HELP - ALGORITMO DE DIJKSTRA ~~\n\n";
     cout << "* O algoritmo mostra a distância mínima entre um vértice fonte e um vértice saída, em grafos com pesos nas arestas\n";
-    cout << "* Se um vértice fonte não for informado pelo comando '-i', o padrão é 0\n";
-    cout << "* O grafo de entrada tem 9 vértices, enumerado de 0 a 8. Nos comandos '-i' e '-l', não insira vértices fora desse intervalo\n";
-    cout << "* O comando '-s' mostra a distância do vértice fonte a todos os outros\n";
+    cout << "* -h\tmostra esse help\n";
+    cout << "* -o <arquivo>\tredireciona a saída para 'arquivo'\n";
+    cout << "* -f <arquivo>\tindica o 'arquivo' que contém o grafo de entrada\n";
+    cout << "* -s\tmostra a solução (em ordem crescente)";
+    cout << "* -i\tvértice inicial (se não for informado, o padrão é 0)\n";
+    cout << "* -l\tvértice final (se não for informado, o padrão é mostrar a solução completa)\n"
 }
 
 
 int main(int argc, char const *argv[])
 {
-    int vertices, arestas, final = 0, fonte = 0;
+    int vertices, arestas, last = 0, fonte = 0;
     bool o = false, f = false, s = false, l = false;
     char entrada[100], saida[100];
 
@@ -130,7 +133,7 @@ int main(int argc, char const *argv[])
             }
             else if (strcmp(argv[i], "-l") == 0) {
                 l = true;
-                final = std::stoi(argv[i+1]);
+                last = std::stoi(argv[i+1]);
                 i++;
             }
             else if (strcmp(argv[i], "-o") == 0){
@@ -148,8 +151,6 @@ int main(int argc, char const *argv[])
         }
     }
 
-    if (o) cout << saida << "\n";
-
     if (!f) {
         cout << "Nenhum arquivo de entrada foi informado.\nEncerrando programa...\n";
         return 0;
@@ -163,15 +164,14 @@ int main(int argc, char const *argv[])
             return 0;
         }
 
-        arquivo >> vertices >> entrada;
+        arquivo >> vertices >> arestas;
 
-        Graph G(vertices);
+        Graph G(vertices, arestas);
         
-        int cnt = 2, src, dest, peso;
+        int src, dest, peso;
         while (!arquivo.eof()) {
             arquivo >> src >> dest >> peso;
             G.addEdge(src, dest, peso);
-            cnt += 3;
         }
 
         arquivo.close();
@@ -180,8 +180,8 @@ int main(int argc, char const *argv[])
             cout << "Vértice fonte fora do intervalo aceitável\n";
             return 0;
         }
-        else if (l && (final < 0 || final >= G.V)) {
-            cout << "Vértice final fora do intervalo aceitável\n";
+        else if (l && (last < 0 || last >= G.V)) {
+            cout << "Vértice last fora do intervalo aceitável\n";
             return 0;
         }
 
@@ -190,9 +190,9 @@ int main(int argc, char const *argv[])
         dijkstra(G, fonte, dist);
         
         if (o)
-            writeSolution(dist, vertices, saida, l, final);
+            writeSolution(dist, vertices, saida, l, last);
         
-        printSolution(dist, vertices, l, final);
+        printSolution(dist, vertices, l, last);
     }
 
     return 0;

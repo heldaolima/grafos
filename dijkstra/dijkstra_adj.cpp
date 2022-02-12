@@ -109,9 +109,9 @@ void help_dijkstra()
     cout << "* -h\tmostra esse help\n";
     cout << "* -o <arquivo>\tredireciona a saída para 'arquivo'\n";
     cout << "* -f <arquivo>\tindica o 'arquivo' que contém o grafo de entrada\n";
-    cout << "* -s\tmostra a solução (em ordem crescente)";
+    cout << "* -s\tmostra a solução (em ordem crescente)\n";
     cout << "* -i\tvértice inicial (se não for informado, o padrão é 0)\n";
-    cout << "* -l\tvértice final (se não for informado, o padrão é mostrar a solução completa)\n"
+    cout << "* -l\tvértice final (se não for informado, o padrão é mostrar a solução completa)\n";
 }
 
 

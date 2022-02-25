@@ -4,15 +4,8 @@
 using std::cout;
 using std::list;
 
-/*
-Makefile da classe Graph
-
-Trata-se de um grafo não direcionado com pesos nas arestas
-
-*/
-
 typedef struct AdjListNode {
-    int dest; //vértice destino
+    int dest; 
     int peso;
     
     AdjListNode(int d, int p) {
@@ -43,11 +36,9 @@ Graph::Graph(int V, int E)
 
 void Graph::addEdge(int src, int dest, int wgt)
 {
-    AdjListNode novo_src = AdjListNode(dest, wgt);
-    AdjListNode novo_dest = AdjListNode(src, wgt);
+    AdjListNode novo = AdjListNode(dest, wgt); 
 
-    adj[src].push_back(novo_src);
-    adj[dest].push_back(novo_dest);
+    adj[src].push_back(novo); //grafo direcionado
 }
 
 void Graph::PrintGraph()
